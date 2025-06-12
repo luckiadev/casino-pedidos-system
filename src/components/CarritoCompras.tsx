@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,22 +22,24 @@ export const CarritoCompras = ({
   onCreateOrder, 
   isCreating 
 }: CarritoComprasProps) => {
-  const [numeroMesa, setNumeroMesa] = useState<string>('1');
-  const numeroMesaNumber = parseInt(numeroMesa) || 0;
+  const [numeroMesa, setNumeroMesa] = useState<string>('');
 
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handleCreateOrder = () => {
-    if (numeroMesaNumber < 1 || numeroMesaNumber > 411) return;
-+    onCreateOrder(numeroMesaNumber);
-    onCreateOrder(numeroMesa);
+    const mesa = parseInt(numeroMesa);
+    if (cart.length === 0) return;
+    if (mesa < 1 || mesa > 410) return;
+    onCreateOrder(mesa);
   };
 
   const handleMesaChange = (value: string) => {
-    setNumeroMesa(value);
-  }
-};
-    
+    // Solo permitir números y campo vacío
+    if (value === '' || /^\d+$/.test(value)) {
+      setNumeroMesa(value);
+    }
+  };
+
   if (cart.length === 0) {
     return (
       <Card className="w-full">
@@ -108,28 +109,22 @@ export const CarritoCompras = ({
             <Label htmlFor="mesa">Número de Mesa</Label>
             <Input
               id="mesa"
-              type="number"
-              min="1"
-              max="410"
               type="text"
               inputMode="numeric"
               value={numeroMesa}
-              onChange={(e) => setNumeroMesa(parseInt(e.target.value) || 1)}
-              placeholder="Ingrese número de mesa"
               onChange={(e) => handleMesaChange(e.target.value)}
               placeholder="Ingrese número de mesa (1-410)"
-              className={numeroMesaNumber > 0 && (numeroMesaNumber < 1 || numeroMesaNumber > 500) ? 'border-red-500' : ''}
             />
-            {numeroMesa !== '' && (numeroMesaNumber < 1 || numeroMesaNumber > 411) && (
+            {numeroMesa !== '' && (parseInt(numeroMesa) < 1 || parseInt(numeroMesa) > 410) && (
               <p className="text-sm text-red-500">
                 El número de mesa debe estar entre 1 y 410
               </p>
-      )}
+            )}
           </div>
 
           <Button
             onClick={handleCreateOrder}
-            disabled={isCreating || cart.length === 0 || numeroMesa === '' || numeroMesaNumber < 1 || numeroMesaNumber > 411}
+            disabled={isCreating || cart.length === 0 || numeroMesa === '' || parseInt(numeroMesa) < 1 || parseInt(numeroMesa) > 410}
             className="w-full"
           >
             {isCreating ? 'Creando pedido...' : 'Crear Pedido'}
