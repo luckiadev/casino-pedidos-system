@@ -29,7 +29,7 @@ export const CarritoCompras = ({
 
   const handleCreateOrder = () => {
     if (cart.length === 0) return;
-    if (numeroMesa < 1 || numeroMesa > 50) return;
+    if (numeroMesa < 1 || numeroMesa > 410) return;
     onCreateOrder(numeroMesa);
   };
 
@@ -104,7 +104,7 @@ export const CarritoCompras = ({
               id="mesa"
               type="number"
               min="1"
-              max="50"
+              max="410"
               value={numeroMesa}
               onChange={(e) => setNumeroMesa(parseInt(e.target.value) || 1)}
               placeholder="Ingrese número de mesa"
@@ -113,7 +113,7 @@ export const CarritoCompras = ({
 
           <Button
             onClick={handleCreateOrder}
-            disabled={isCreating || cart.length === 0 || numeroMesa < 1 || numeroMesa > 50}
+            disabled={isCreating || cart.length === 0 || numeroMesa < 1 || numeroMesa > 410}
             className="w-full"
           >
             {isCreating ? 'Creando pedido...' : 'Crear Pedido'}
