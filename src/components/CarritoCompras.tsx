@@ -23,16 +23,22 @@ export const CarritoCompras = ({
   onCreateOrder, 
   isCreating 
 }: CarritoComprasProps) => {
-  const [numeroMesa, setNumeroMesa] = useState<number>(1);
+  const [numeroMesa, setNumeroMesa] = useState<string>('1');
+  const numeroMesaNumber = parseInt(numeroMesa) || 0;
 
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handleCreateOrder = () => {
-    if (cart.length === 0) return;
-    if (numeroMesa < 1 || numeroMesa > 410) return;
+    if (numeroMesaNumber < 1 || numeroMesaNumber > 411) return;
++    onCreateOrder(numeroMesaNumber);
     onCreateOrder(numeroMesa);
   };
 
+  const handleMesaChange = (value: string) => {
+    setNumeroMesa(value);
+  }
+};
+    
   if (cart.length === 0) {
     return (
       <Card className="w-full">
@@ -105,15 +111,25 @@ export const CarritoCompras = ({
               type="number"
               min="1"
               max="410"
+              type="text"
+              inputMode="numeric"
               value={numeroMesa}
               onChange={(e) => setNumeroMesa(parseInt(e.target.value) || 1)}
               placeholder="Ingrese número de mesa"
+              onChange={(e) => handleMesaChange(e.target.value)}
+              placeholder="Ingrese número de mesa (1-410)"
+              className={numeroMesaNumber > 0 && (numeroMesaNumber < 1 || numeroMesaNumber > 500) ? 'border-red-500' : ''}
             />
+            {numeroMesa !== '' && (numeroMesaNumber < 1 || numeroMesaNumber > 411) && (
+              <p className="text-sm text-red-500">
+                El número de mesa debe estar entre 1 y 410
+              </p>
+      )}
           </div>
 
           <Button
             onClick={handleCreateOrder}
-            disabled={isCreating || cart.length === 0 || numeroMesa < 1 || numeroMesa > 410}
+            disabled={isCreating || cart.length === 0 || numeroMesa === '' || numeroMesaNumber < 1 || numeroMesaNumber > 411}
             className="w-full"
           >
             {isCreating ? 'Creando pedido...' : 'Crear Pedido'}
